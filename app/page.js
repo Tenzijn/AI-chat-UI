@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import SearchBox from '@/components/SearchBox/SearchBox';
+import Chatbot from '@/components/ChatBot/Chatbot';
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -16,6 +17,8 @@ export default function Home() {
 
   return (
     <div className='flex min-h-screen bg-gray-100 dark:bg-gray-900'>
+      <SearchBox />
+      <Chatbot />
       {/* Sidebar */}
       <aside className='w-64 bg-blue-600 dark:bg-gray-800 text-white flex flex-col'>
         <div className='p-6'>
@@ -127,7 +130,6 @@ export default function Home() {
             <h3 className='text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4'>
               Search Employee Records
             </h3>
-            <SearchBox />
           </section>
 
           {/* Employee List Section */}
