@@ -15,38 +15,57 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim() === '') return;
 
-    // Add user message
     const userMessage = { text: input, sender: 'user' };
     setMessages((prev) => [...prev, userMessage]);
 
-    setInput(''); // Clear input field
-
-    // Show typing indicator
+    setInput('');
     setIsTyping(true);
 
-    // Simulate delay for system response
-    setTimeout(() => {
-      const systemMessage = { text: 'This is a response.', sender: 'system' };
-      setMessages((prev) => [...prev, systemMessage]);
-      setIsTyping(false); // Hide typing indicator
+    try {
+      // Make an API call to fetch the response
+      const response = await fetch('/api/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: input }),
+      });
 
-      // Refocus on input field
+      if (!response.ok) {
+        throw new Error('Failed to fetch the response');
+      }
+
+      const data = await response.json();
+      const systemMessage = {
+        text: data.choices[0].message.content,
+        sender: 'system',
+      };
+
+      setMessages((prev) => [...prev, systemMessage]);
+    } catch (error) {
+      console.error('Error fetching the response:', error);
+      const errorMessage = {
+        text: 'An error occurred. Please try again.',
+        sender: 'system',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
       inputRef.current?.focus();
-    }, 2000); // 2-second delay
+    }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // Prevent default behavior of Enter key
+      e.preventDefault();
       handleSend();
     }
   };
 
   useEffect(() => {
-    // Scroll to the bottom when messages change
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
