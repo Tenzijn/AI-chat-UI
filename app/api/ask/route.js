@@ -2,19 +2,19 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   try {
-    const { question } = await req.json(); // Parse the request body
+    const { question } = await req.json();
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Use server-side environment variable
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Use the newer model
-        messages: [{ role: 'user', content: question }], // Chat-based format
-        max_tokens: 100, // Limit the response length
-        temperature: 0.7, // Adjust creativity level
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: question }],
+        max_tokens: 100,
+        temperature: 0.7,
       }),
     });
 
@@ -28,7 +28,7 @@ export async function POST(req) {
     }
 
     const data = await response.json();
-    return NextResponse.json(data); // Return the OpenAI API response
+    return NextResponse.json(data);
   } catch (error) {
     console.error('Error:', error);
     return NextResponse.json(
