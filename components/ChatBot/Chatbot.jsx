@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { FaSun, FaMoon, FaTimes } from 'react-icons/fa';
+import { marked } from 'marked';
 import Image from 'next/image';
 import ai from '@/public/ai.jpeg';
 import avatar from '@/public/avatar.png';
@@ -25,7 +26,6 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      // Make an API call to fetch the response
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: {
@@ -40,8 +40,9 @@ const Chatbot = () => {
 
       const data = await response.json();
       const systemMessage = {
-        text: data.choices[0].message.content,
+        text: marked(data.choices[0].message.content), // Convert Markdown to HTML
         sender: 'system',
+        isHTML: true, // Indicate that this message contains HTML
       };
 
       setMessages((prev) => [...prev, systemMessage]);
@@ -50,6 +51,7 @@ const Chatbot = () => {
       const errorMessage = {
         text: 'An error occurred. Please try again.',
         sender: 'system',
+        isHTML: false,
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -75,7 +77,7 @@ const Chatbot = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className='fixed bottom-4 right-4 text-white rounded-full shadow-lg hover:bg-blue-700 transform hover:scale-110 transition-transform duration-200'
+          className='fixed bottom-10 right-10 text-white rounded-full shadow-lg hover:bg-blue-700 transform hover:scale-110 transition-transform duration-200'
         >
           <Image
             src={ai}
@@ -134,19 +136,34 @@ const Chatbot = () => {
                     />
                   </div>
                 )}
-                <div
-                  className={`max-w-xs px-4 py-2 rounded-lg ${
-                    message.sender === 'user'
-                      ? darkMode
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-blue-500 text-white'
-                      : darkMode
-                      ? 'bg-gray-700 text-white'
-                      : 'bg-gray-200 text-black'
-                  }`}
-                >
-                  {message.text}
-                </div>
+                {message.isHTML ? (
+                  <div
+                    className={`max-w-xs px-4 py-2 rounded-lg ${
+                      message.sender === 'user'
+                        ? darkMode
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-blue-500 text-white'
+                        : darkMode
+                        ? 'bg-gray-700 text-white'
+                        : 'bg-gray-200 text-black'
+                    }`}
+                    dangerouslySetInnerHTML={{ __html: message.text }}
+                  />
+                ) : (
+                  <div
+                    className={`max-w-xs px-4 py-2 rounded-lg ${
+                      message.sender === 'user'
+                        ? darkMode
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-blue-500 text-white'
+                        : darkMode
+                        ? 'bg-gray-700 text-white'
+                        : 'bg-gray-200 text-black'
+                    }`}
+                  >
+                    {message.text}
+                  </div>
+                )}
                 {message.sender === 'user' && (
                   <div
                     className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center ml-2 ${

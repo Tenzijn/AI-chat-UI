@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { marked } from 'marked'; // Import marked for Markdown-to-HTML conversion
 
-export default function SearchBox({ onSendMessage }) {
+export default function SearchBox() {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [answer, setanswer] = useState(null); // State for dummy answer (JSON object)
@@ -100,9 +101,17 @@ export default function SearchBox({ onSendMessage }) {
       }
 
       const data = await response.json();
+      let formattedAnswer = marked(data.choices[0].message.content); // Convert Markdown to HTML
+
+      // Add extra spacing between paragraphs
+      formattedAnswer = formattedAnswer.replace(
+        /<p>/g,
+        '<p style="margin-bottom: 1.5em;">'
+      );
+
       setIsLoading(false);
       setanswer({
-        answer: data.choices[0].message.content,
+        answer: formattedAnswer, // Store the formatted HTML with extra spacing
       });
       revealAnswer(data.choices[0].message.content);
     } catch (error) {
@@ -128,7 +137,10 @@ export default function SearchBox({ onSendMessage }) {
         open ? 'block' : 'hidden'
       }`}
     >
-      <div ref={containerRef} className='relative w-1/3 max-w-md mt-20'>
+      <div
+        ref={containerRef}
+        className='relative w-full max-w-md mt-20 sm:w-4/5 md:w-2/3 lg:w-1/3'
+      >
         <div className='relative flex items-center'>
           <input
             ref={inputRef}
@@ -194,7 +206,10 @@ export default function SearchBox({ onSendMessage }) {
               </div>
             ) : (
               <div>
-                <p className='text-gray-900 dark:text-white'>{answer.answer}</p>
+                <p
+                  className='text-gray-900 dark:text-white'
+                  dangerouslySetInnerHTML={{ __html: answer.answer }} // Render formatted HTML with extra spacing
+                />
               </div>
             )}
           </div>
