@@ -139,7 +139,7 @@ export default function SearchBox() {
     >
       <div
         ref={containerRef}
-        className='relative w-full max-w-md mt-20 sm:w-4/5 md:w-2/3 lg:w-1/3'
+        className='relative w-full max-w-lg mt-20 sm:w-4/5 md:w-2/3 lg:w-1/3'
       >
         <div className='relative flex items-center'>
           <input
@@ -190,7 +190,7 @@ export default function SearchBox() {
         {(isLoading || answer) && ( // Conditionally render the answer box
           <div
             className='mt-4 p-4 bg-gray-100 border border-gray-300 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 relative'
-            style={{ maxHeight: '300px', overflowY: 'auto' }} // Set max height and make scrollable
+            style={{ maxHeight: '500px', overflowY: 'auto' }} // Set max height and make scrollable
           >
             <button
               onClick={handleCloseAnswerBox}

@@ -91,7 +91,7 @@ const Chatbot = () => {
       {/* Floating Chat Box */}
       {isOpen && (
         <div
-          className={`fixed bottom-4 right-4 w-80 h-96 bg-gray-100 dark:bg-gray-900 text-black dark:text-white rounded-lg shadow-lg flex flex-col`}
+          className={`fixed bottom-4 right-0 sm:right-4 w-full sm:w-4/5 md:w-2/3 lg:w-1/2 xl:w-1/3 h-1/2 bg-gray-100 dark:bg-gray-900 text-black dark:text-white rounded-lg shadow-lg flex flex-col`}
         >
           {/* Header */}
           <div className='flex items-center justify-between p-4 bg-blue-600 dark:bg-gray-800 text-white rounded-t-lg'>
