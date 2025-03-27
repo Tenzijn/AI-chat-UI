@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 export default function SearchBox({ onSendMessage }) {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [dummyAnswer, setDummyAnswer] = useState(null); // State for dummy answer (JSON object)
+  const [answer, setanswer] = useState(null); // State for dummy answer (JSON object)
   const [isLoading, setIsLoading] = useState(false); // State for loading
   const [displayedAnswer, setDisplayedAnswer] = useState(''); // State for incrementally showing the answer
   const inputRef = useRef(null);
@@ -79,7 +79,7 @@ export default function SearchBox({ onSendMessage }) {
     if (!inputValue.trim()) return;
 
     setIsLoading(true);
-    setDummyAnswer(null);
+    setanswer(null);
     setDisplayedAnswer('');
 
     try {
@@ -101,15 +101,14 @@ export default function SearchBox({ onSendMessage }) {
 
       const data = await response.json();
       setIsLoading(false);
-      setDummyAnswer({
-        answer: data.choices[0].text.trim(),
-        sources: 'OpenAI API',
+      setanswer({
+        answer: data.choices[0].message.content,
       });
-      revealAnswer(data.choices[0].text.trim());
+      revealAnswer(data.choices[0].message.content);
     } catch (error) {
       console.error('Error fetching the answer:', error);
       setIsLoading(false);
-      setDummyAnswer({
+      setanswer({
         answer: error.message || 'An error occurred. Please try again.',
         sources: '',
       });
@@ -119,7 +118,7 @@ export default function SearchBox({ onSendMessage }) {
   };
 
   const handleCloseAnswerBox = () => {
-    setDummyAnswer(null);
+    setanswer(null);
     setDisplayedAnswer('');
   };
 
@@ -176,8 +175,11 @@ export default function SearchBox({ onSendMessage }) {
             />
           </svg>
         </div>
-        {(isLoading || dummyAnswer) && ( // Conditionally render the answer box
-          <div className='mt-4 p-4 bg-gray-100 border border-gray-300 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 relative'>
+        {(isLoading || answer) && ( // Conditionally render the answer box
+          <div
+            className='mt-4 p-4 bg-gray-100 border border-gray-300 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600 relative'
+            style={{ maxHeight: '300px', overflowY: 'auto' }} // Set max height and make scrollable
+          >
             <button
               onClick={handleCloseAnswerBox}
               className='absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
@@ -192,12 +194,7 @@ export default function SearchBox({ onSendMessage }) {
               </div>
             ) : (
               <div>
-                <p className='text-gray-900 dark:text-white'>
-                  {dummyAnswer.answer}
-                </p>
-                <p className='text-gray-600 dark:text-gray-400 mt-2'>
-                  <strong>Source:</strong> {dummyAnswer.sources}
-                </p>
+                <p className='text-gray-900 dark:text-white'>{answer.answer}</p>
               </div>
             )}
           </div>

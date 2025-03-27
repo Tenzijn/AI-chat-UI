@@ -121,11 +121,17 @@ const Chatbot = () => {
               >
                 {message.sender === 'system' && (
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center mr-2 ${
+                    className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center mr-2 ${
                       darkMode ? 'bg-gray-600' : 'bg-gray-300'
                     }`}
                   >
-                    <Image src={ai} alt='ai image' className='rounded-lg' />
+                    <Image
+                      src={ai}
+                      alt='ai image'
+                      className='rounded-lg w-8 h-8'
+                      width={32}
+                      height={32}
+                    />
                   </div>
                 )}
                 <div
@@ -143,7 +149,7 @@ const Chatbot = () => {
                 </div>
                 {message.sender === 'user' && (
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center ml-2 ${
+                    className={`w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center ml-2 ${
                       darkMode
                         ? 'bg-blue-600 text-white'
                         : 'bg-blue-500 text-white'
