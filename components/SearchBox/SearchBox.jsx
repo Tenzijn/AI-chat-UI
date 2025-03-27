@@ -208,7 +208,7 @@ export default function SearchBox() {
               <div>
                 <p
                   className='text-gray-900 dark:text-white'
-                  dangerouslySetInnerHTML={{ __html: answer.answer }} // Render formatted HTML with extra spacing
+                  dangerouslySetInnerHTML={{ __html: answer.answer }}
                 />
               </div>
             )}
